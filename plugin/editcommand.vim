@@ -13,7 +13,8 @@ let s:space_or_eol = '\( \|$\|\n\)'
 function! s:strip_prompt(commandline)
   " strip up to and including the first occurence of the prompt
   let l:prompt_idx = match(a:commandline, g:editcommand_prompt . s:space_or_eol . '\zs')
-  return strpart(a:commandline, l:prompt_idx)
+  let l:prompt_suffix_idx = match(a:commandline, g:editcommand_prompt_suffix)
+  return strpart(a:commandline, l:prompt_idx, l:prompt_suffix_idx - 1)
 endfunction
 
 function! s:extract_command() abort
@@ -89,5 +90,5 @@ endfunction
 tnoremap <silent> <Plug>EditCommand <c-\><c-n>:call <SID>extract_command()<cr>A<c-c><c-\><c-n>:call <SID>set_terminal_autocmd()<cr>:call <SID>edit_command()<cr>
 
 if !exists("g:editcommand_no_mappings") || ! g:editcommand_no_mappings
-  tmap <c-x> <Plug>EditCommand
+  tmap <c-x> <Plug>EditCommand :FloatermHide<cr>
 endif
