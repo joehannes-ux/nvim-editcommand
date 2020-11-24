@@ -46,17 +46,11 @@ function! s:format_command(command)
 endfunction
 
 function! s:put_command()
-  silent put! =g:editcommand_after
+  normal! <c-\><c-n>put! =g:editcommand_after
 endfunction
 
 function! s:open_scratch_buffer()
-  " open new empty buffer
-  new
-
-  " make buffer a scratch buffer
-  setlocal buftype=nofile
-  setlocal bufhidden=unload
-  setlocal noswapfile
+  BOpenSHorizontal scratchpad.zsh
 
   " save command when leaving buffer
   autocmd BufLeave <buffer> let g:editcommand_after = join(getline(1, '$'), "\n") | autocmd! BufLeave <buffer>
@@ -84,11 +78,7 @@ function! s:set_terminal_autocmd()
 endfunction
 
 function! s:edit_command()
-  if !exists("g:editcommand_use_temp_file") || ! g:editcommand_use_temp_file
-    call s:open_scratch_buffer()
-  else
-    call s:open_temporary_file()
-  endif
+  call s:open_scratch_buffer()
 
   " put command into buffer
   silent put =g:editcommand_before
@@ -99,5 +89,5 @@ endfunction
 tnoremap <silent> <Plug>EditCommand <c-\><c-n>:call <SID>extract_command()<cr>A<c-c><c-\><c-n>:call <SID>set_terminal_autocmd()<cr>:call <SID>edit_command()<cr>
 
 if !exists("g:editcommand_no_mappings") || ! g:editcommand_no_mappings
-  tmap <c-x><c-e> <Plug>EditCommand
+  tmap <c-x> <Plug>EditCommand
 endif
