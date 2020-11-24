@@ -8,13 +8,14 @@ let g:editcommand_loaded = 1
 
 " default bash prompt is $ so use that as a default
 let g:editcommand_prompt = get(g:, 'editcommand_prompt', '$')
+let g:editcommand_prompt_suffix  = get(g:, 'editcommand_prompt_suffix', '')
 let s:space_or_eol = '\( \|$\|\n\)'
 
 function! s:strip_prompt(commandline)
   " strip up to and including the first occurence of the prompt
-  let l:prompt_idx = match(a:commandline, g:editcommand_prompt . s:space_or_eol . '\zs')
+  let l:prompt_idx = matchend(a:commandline, g:editcommand_prompt . s:space_or_eol . '\zs')
   let l:prompt_suffix_idx = match(a:commandline, g:editcommand_prompt_suffix)
-  return strpart(a:commandline, l:prompt_idx, l:prompt_suffix_idx - 1)
+  return strpart(a:commandline, l:prompt_idx, l:prompt_suffix_idx)
 endfunction
 
 function! s:extract_command() abort
